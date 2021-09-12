@@ -1,14 +1,13 @@
 import pygame
-import numpy
+#import numpy
 
 
-class Snake(pygame.sprite.Sprite):
-    def __init__(self, x, y, surf, group):
+class SnakeHead(pygame.sprite.Sprite):
+    def __init__(self, x, y, surfhead, group):
         pygame.sprite.Sprite.__init__(self)
-        self.image = surf
+        self.image = surfhead
         self.rect = self.image.get_rect(topleft=(x, y))
         self.add(group)
-        # self.speed = speed
 
     # movement of object
     # speed in format [speedX, speedY]
@@ -18,6 +17,8 @@ class Snake(pygame.sprite.Sprite):
         if n == 10:
             self.rect.x += speed[0]
             self.rect.y += speed[1]
+
+        # управление направлением движения стрелочками, поворачивать назад нельзя
         for Key in args:
             if Key[pygame.K_LEFT] and not speed[0] == speed_init:
                 speed[0] = -speed_init
@@ -32,6 +33,8 @@ class Snake(pygame.sprite.Sprite):
                 speed[0] = 0
                 speed[1] = speed_init
 
+        # зацикленность игрового поля
+
         if self.rect.top < 0:
             self.rect.bottom = H
         elif self.rect.bottom > H:
@@ -41,9 +44,22 @@ class Snake(pygame.sprite.Sprite):
         elif self.rect.left < 0:
             self.rect.top = W
 
-class Ball(pygame.sprite.Sprite):
-    def __init__(self, x, y, surf):
+
+class SnakeBody(pygame.sprite.Sprite):
+    def __init__(self, surfbody, x, y, group):
         pygame.sprite.Sprite.__init__(self)
-        self.image = surf
+        self.image = surfbody
+        self.rect = self.image.get_rect(topleft=(x, y))
+        self.add(group)
+
+    def update(self, cor_pre, n):
+        if n == 10:
+            # moving
+            self.rect.x = cor_pre[0]
+            self.rect.y = cor_pre[1]
+
+        # adding if apple
+
+
 
 

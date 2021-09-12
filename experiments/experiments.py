@@ -1,5 +1,6 @@
 import pygame
-from experiment_classes import Snake
+from experiment_classes import SnakeHead
+from experiment_classes import SnakeBody
 
 # переменные
 Width = 400
@@ -35,11 +36,21 @@ clock = pygame.time.Clock()
 
 
 # pre-drawing
-surf = pygame.Surface((20, 20))
-surf.fill(GREEN)
+surfHead = pygame.Surface((20, 20))
+surfHead.fill(GREEN)
+
+surfBody = pygame.Surface((20, 20))
+surfBody.fill(BLUE)
+
 # drawing
-SG = pygame.sprite.Group()
-snake = Snake(Width//2, Height//2, surf, SG)
+SH = pygame.sprite.Group()
+SB = pygame.sprite.Group()
+
+snake = SnakeHead(Width // 2, Height // 2, surfHead, SH)
+snakeBody1 = SnakeBody(surfBody, Width//2, Height//2 + 20, SB)
+snakeBody2 = SnakeBody(surfBody, Width//2, Height//2 + 40, SB)
+
+cor_pre = [[Width//2, Height//2 + 20], [Width//2, Height//2 + 40]]
 
 
 # body cycle
@@ -57,10 +68,21 @@ while not game_over:
         n += 1
     else:
         n = 0
-    SG.update(Width, Height, speed, speed_init, n, keys)
+        cor_pre.insert(0, [snake.rect.x, snake.rect.y])
+
+        cor_pre.pop(-1)
+
+
+
+    for i in range(len(cor_pre)):
+        SB.sprites()[i].update(cor_pre[i], n)
+    SH.update(Width, Height, speed, speed_init, n, keys)
+    
+
     # Отрисовка
     screen.fill(BLACK)
-    SG.draw(screen)
+    SH.draw(screen)
+    SB.draw(screen)
 
     # После отрисовки всего, переворачиваем экран
     pygame.display.update()
