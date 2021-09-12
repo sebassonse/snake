@@ -12,11 +12,10 @@ class SnakeHead(pygame.sprite.Sprite):
     # movement of object
     # speed in format [speedX, speedY]
     # последним передается список keys
-    def update(self, W, H, speed, speed_init, n, *args):
+    def update(self, W, H, speed, speed_init, *args):
         # змейка инициализируется мордой вверх в середине поля и сразу начинает двигаться
-        if n == 10:
-            self.rect.x += speed[0]
-            self.rect.y += speed[1]
+        self.rect.x += speed[0]
+        self.rect.y += speed[1]
 
         # управление направлением движения стрелочками, поворачивать назад нельзя
         for Key in args:
@@ -52,13 +51,11 @@ class SnakeBody(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(topleft=(x, y))
         self.add(group)
 
-    def update(self, cor_pre, n):
-        if n == 10:
-            # moving
-            self.rect.x = cor_pre[0]
-            self.rect.y = cor_pre[1]
+    def update(self, cor_pre):
+        # moving
+        self.rect.x = cor_pre[0]
+        self.rect.y = cor_pre[1]
 
-        # adding if apple
 
 
 

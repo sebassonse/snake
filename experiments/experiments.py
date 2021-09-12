@@ -5,7 +5,7 @@ from experiment_classes import SnakeBody
 # переменные
 Width = 400
 Height = 400
-FPS = 20
+FPS = 5
 n = 0
 
 X_sn_init, Y_sn_init = Width/2, Height/2
@@ -64,19 +64,11 @@ while not game_over:
             game_over = True
 
     keys = pygame.key.get_pressed()
-    if n < 10:
-        n += 1
-    else:
-        n = 0
-        cor_pre.insert(0, [snake.rect.x, snake.rect.y])
-
-        cor_pre.pop(-1)
-
-
-
+    cor_pre.insert(0, [snake.rect.x, snake.rect.y])
+    cor_pre.pop(-1)
     for i in range(len(cor_pre)):
-        SB.sprites()[i].update(cor_pre[i], n)
-    SH.update(Width, Height, speed, speed_init, n, keys)
+        SB.sprites()[i].update(cor_pre[i])
+    SH.update(Width, Height, speed, speed_init, keys)
     
 
     # Отрисовка
