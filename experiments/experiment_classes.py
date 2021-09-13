@@ -18,20 +18,19 @@ class SnakeHead(pygame.sprite.Sprite):
         self.rect.y += speed[1]
 
         # управление направлением движения стрелочками, поворачивать назад нельзя
-        for Key in args:
-            if Key[pygame.K_LEFT] and not speed[0] == speed_init:
+        for keys in args:
+            if keys[pygame.K_LEFT] and not speed[0] == speed_init:
                 speed[0] = -speed_init
                 speed[1] = 0
-            if Key[pygame.K_RIGHT] and not speed[0] == -speed_init:
+            if keys[pygame.K_RIGHT] and not speed[0] == -speed_init:
                 speed[0] = speed_init
                 speed[1] = 0
-            if Key[pygame.K_UP] and not speed[1] == speed_init:
+            if keys[pygame.K_UP] and not speed[1] == speed_init:
                 speed[0] = 0
                 speed[1] = -speed_init
-            if Key[pygame.K_DOWN] and not speed[1] == -speed_init:
+            if keys[pygame.K_DOWN] and not speed[1] == -speed_init:
                 speed[0] = 0
                 speed[1] = speed_init
-
         # зацикленность игрового поля
 
         if self.rect.top < 0:
@@ -41,7 +40,7 @@ class SnakeHead(pygame.sprite.Sprite):
         elif self.rect.right > W:
             self.rect.left = 0
         elif self.rect.left < 0:
-            self.rect.top = W
+            self.rect.right = W
 
 
 class SnakeBody(pygame.sprite.Sprite):
@@ -57,6 +56,11 @@ class SnakeBody(pygame.sprite.Sprite):
         self.rect.y = cor_pre[1]
 
 
+class Apple(pygame.sprite.Sprite):
+    def __init__(self, surfapple, x, y):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = surfapple
+        self.rect = self.image.get_rect(topleft=(x, y))
 
 
 

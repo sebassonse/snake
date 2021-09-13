@@ -1,16 +1,18 @@
 import pygame
+import random
 from experiment_classes import SnakeHead
 from experiment_classes import SnakeBody
 
 # переменные
 Width = 400
 Height = 400
-FPS = 5
+FPS = 10
 n = 0
 
 X_sn_init, Y_sn_init = Width/2, Height/2
 speed_init = 20
 speed = [0, -speed_init]
+
 
 # Цвета (R, G, B)
 BLACK = (0, 0, 0)
@@ -42,6 +44,9 @@ surfHead.fill(GREEN)
 surfBody = pygame.Surface((20, 20))
 surfBody.fill(BLUE)
 
+surfApple = pygame.Surface((20,20))
+surfApple.fill(RED)
+
 # drawing
 SH = pygame.sprite.Group()
 SB = pygame.sprite.Group()
@@ -64,6 +69,7 @@ while not game_over:
             game_over = True
 
     keys = pygame.key.get_pressed()
+
     cor_pre.insert(0, [snake.rect.x, snake.rect.y])
     cor_pre.pop(-1)
     for i in range(len(cor_pre)):
