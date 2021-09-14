@@ -34,8 +34,7 @@ while [appleX_init, appleY_init] == [snakeX_init, snakeY_init]:
     appleX_init = random.randrange(0, Screen_size, apple_size)
     appleY_init = random.randrange(0, Screen_size, apple_size)
 
-snake_placement = [[snake_head_rect.x, snake_head_rect.y]]
-
+snake_placement_list = [tuple([snake_head_rect.x, snake_head_rect.y])]
 # classes and other
 
 
@@ -63,6 +62,7 @@ while not game_over:
         if event.type == pygame.QUIT:
             game_over = True
 
+    # ДВИЖЕНИЕ
     # нажатые клавиши
     keys = pygame.key.get_pressed()
     if keys[pygame.K_LEFT] and not speed[0] == snake_speed:
@@ -92,17 +92,32 @@ while not game_over:
     elif snake_head_rect.left < 0:
         snake_head_rect.right = Width
 
-    # ОТРИСОВКА
+    # ПОЕДАНИЕ И РОСТ
+    # поедание
+    if [snake_head_rect.x, snake_head_rect.y] == [appleX_init, appleY_init]:
+        snake_placement_list.append(tuple([0, 0]))
 
+        appleX_init = random.randrange(0, Screen_size, apple_size)
+        appleY_init = random.randrange(0, Screen_size, apple_size)
+
+    # рост и наследование положения
+    snake_placement_list.insert(0, tuple([snake_head_rect.x, snake_head_rect.y]))
+    snake_placement_list.pop(-1)
+
+    # ОТРИСОВКА
     Screen.fill(BLACK)
     # Рисуем яблоко
     pygame.draw.rect(Screen, RED, [appleX_init, appleY_init, apple_size, apple_size])
     # Рисуем змею
     Screen.blit(snake_head, snake_head_rect)
-    if len(snake_placement) > 1:
-        for i in range(len(snake_placement)):
-            pygame.draw.rect(Screen, GREEN, [snake_placement[i][0], snake_placement[i][1], snake_size, snake_size])
+    if len(snake_placement_list) > 1:
+        for i in range(len(snake_placement_list)):
+            pygame.draw.rect(Screen, GREEN, [snake_placement_list[i][0], snake_placement_list[i][1], snake_size, snake_size])
     # После отрисовки всего, переворачиваем экран
     pygame.display.flip()
+
+    # ЕСЛИ ЗМЕЙКА НАТКНУЛАСЬ САМА НА СЕБЯ
+    if len(set(snake_placement_list)) < len(snake_placement_list):
+        game_over = True
 
 pygame.quit()
