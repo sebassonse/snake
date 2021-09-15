@@ -103,8 +103,10 @@ while not game_over:
     snake_head_rect.x += speed[0]
     snake_head_rect.y += speed[1]
 
-    # зацикленность игрового поля
+    # возводим стены
     game_over = walls(snake_head_rect)
+    if game_over:
+        break
 
     # ПОЕДАНИЕ И РОСТ
     # поедание
