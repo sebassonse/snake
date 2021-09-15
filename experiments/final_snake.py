@@ -54,15 +54,10 @@ def check_pressed_keys():
         keys = []
 
 
-def field_looping(snake_head_rect):
-    if snake_head_rect.top < 0:
-        snake_head_rect.bottom = Height
-    elif snake_head_rect.bottom > Height:
-        snake_head_rect.top = 0
-    elif snake_head_rect.right > Width:
-        snake_head_rect.left = 0
-    elif snake_head_rect.left < 0:
-        snake_head_rect.right = Width
+def walls(snake_head_rect):
+    if snake_head_rect.top < 0 or snake_head_rect.bottom > Height\
+            or snake_head_rect.right > Width or snake_head_rect.left < 0:
+        return True
 
 
 def apple_generation(Apple_placement, Snake_placement):
@@ -109,7 +104,7 @@ while not game_over:
     snake_head_rect.y += speed[1]
 
     # зацикленность игрового поля
-    field_looping(snake_head_rect)
+    game_over = walls(snake_head_rect)
 
     # ПОЕДАНИЕ И РОСТ
     # поедание
