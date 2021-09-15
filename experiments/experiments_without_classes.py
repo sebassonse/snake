@@ -99,7 +99,6 @@ while not game_over:
     check_pressed_keys()
 
     # движение змейки
-
     snake_head_rect.x += speed[0]
     snake_head_rect.y += speed[1]
 
