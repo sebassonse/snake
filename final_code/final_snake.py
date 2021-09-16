@@ -104,8 +104,8 @@ while not game_over:
     snake_head_rect.y += speed[1]
 
     # возводим стены
-    game_over = walls(snake_head_rect)
-    if game_over:
+    game_over_walls = walls(snake_head_rect)
+    if game_over_walls:
         break
 
     # ПОЕДАНИЕ И РОСТ
