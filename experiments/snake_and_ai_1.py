@@ -70,7 +70,7 @@ def apple_generation(Apple_placement, Snake_placement):
 
 
 def matrix_generation(playing_field_size, snake_size, snake_placement_list, apple_placement):
-    M = np.zeros((playing_field_size, playing_field_size))
+    M = np.ones((playing_field_size, playing_field_size))
     for i in range(1, len(snake_placement_list)):
         s_p_l_array = np.floor_divide(snake_placement_list[i], snake_size)
         M[s_p_l_array[1], s_p_l_array[0]] = 5
@@ -79,6 +79,54 @@ def matrix_generation(playing_field_size, snake_size, snake_placement_list, appl
     M[s_h_p_array[1], s_h_p_array[0]] = 6
     a_p_array = np.floor_divide(apple_placement, snake_size)
     M[a_p_array[1], a_p_array[0]] = 10
+
+
+def closest_barrier(snake_placement_list, snake_head_rect, screen_size, snake_size):
+    snake_placement_list_X = []
+    snake_placement_list_Y = []
+    onTheWayVert = []
+    onTheWayHoriz = []
+    barriersDown = []
+    barriersUp = []
+    barriersRight = []
+    barriersLeft = []
+    for i in range(len(snake_placement_list)):
+        snake_placement_list_X.append(snake_placement_list[i][0])
+        snake_placement_list_Y.append(snake_placement_list[i][1])
+
+    for i in range(len(snake_placement_list)):
+        if snake_head_rect.x == snake_placement_list_X[i]:
+            onTheWayVert.append(int(i))
+        if snake_head_rect.y == snake_placement_list_Y[i]:
+            onTheWayHoriz.append(int(i))
+
+    if len(onTheWayVert) > 0:
+        # distance y
+        for j in range(len(onTheWayVert)):
+            if snake_head_rect.y - snake_placement_list[onTheWayVert[j]][1] < 0:
+                barriersDown.append(abs(snake_head_rect.bottom - snake_placement_list[onTheWayVert[j]][1]))
+            if snake_head_rect.y - snake_placement_list[onTheWayVert[j]][1] > 0:
+                barriersUp.append(abs(snake_head_rect.top - (snake_placement_list[onTheWayVert[j]][1] + snake_size)))
+
+    if len(barriersUp) == 0:
+        barriersUp.append(abs(snake_head_rect.top))
+    if len(barriersDown) == 0:
+        barriersDown.append(abs(snake_head_rect.bottom - screen_size))
+
+    if len(onTheWayHoriz) > 0:
+        # distance x
+        for j in range(len(onTheWayHoriz)):
+            if snake_head_rect.x - snake_placement_list[onTheWayHoriz[j]][0] < 0:
+                barriersRight.append(abs(snake_head_rect.right - snake_placement_list[onTheWayHoriz[j]][0]))
+            if snake_head_rect.x - snake_placement_list[onTheWayHoriz[j]][0] > 0:
+                barriersLeft.append(abs(snake_head_rect.left - (snake_placement_list[onTheWayHoriz[j]][0] + snake_size)))
+
+    if len(barriersLeft) == 0:
+        barriersLeft.append(abs(snake_head_rect.left))
+    if len(barriersRight) == 0:
+        barriersRight.append(abs(snake_head_rect.right - screen_size))
+
+    return [min(barriersUp), min(barriersRight), min(barriersDown), min(barriersLeft)]
 
 
 # рисуем яблоко
@@ -116,11 +164,6 @@ while not game_over:
     snake_head_rect.x += speed[0]
     snake_head_rect.y += speed[1]
 
-    # возводим стены
-    game_over_walls = walls(snake_head_rect)
-    if game_over_walls:
-        break
-
     # ПОЕДАНИЕ И РОСТ
     # поедание
     if snake_placement_list[0] == apple_placement:
@@ -130,6 +173,15 @@ while not game_over:
     # рост и наследование положения
     snake_placement_list.insert(0, tuple([snake_head_rect.x, snake_head_rect.y]))
     snake_placement_list.pop(-1)
+
+    # возводим стены
+    game_over_walls = walls(snake_head_rect)
+    if game_over_walls:
+        break
+
+    # ЕСЛИ ЗМЕЙКА НАТКНУЛАСЬ САМА НА СЕБЯ
+    if len(set(snake_placement_list)) < len(snake_placement_list):
+        break
 
     # matrix generation
     matrix_generation(playing_field_size, snake_size, snake_placement_list, apple_placement)
@@ -148,8 +200,10 @@ while not game_over:
     # После отрисовки всего, переворачиваем экран
     pygame.display.flip()
 
-    # ЕСЛИ ЗМЕЙКА НАТКНУЛАСЬ САМА НА СЕБЯ
-    if len(set(snake_placement_list)) < len(snake_placement_list):
-        game_over = True
+    # FEATURES
+
+    # distance to the walls and snake body
+    closestBarriers = closest_barrier(snake_placement_list, snake_head_rect, Screen_size, snake_size)
+    print(closestBarriers)
 
 pygame.quit()
